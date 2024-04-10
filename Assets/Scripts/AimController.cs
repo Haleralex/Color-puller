@@ -19,7 +19,10 @@ public class AimController : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private Animator animator;
     [SerializeField] private VisualEffect visualEffect;
-    [SerializeField] private testIK testIK;
+    [SerializeField] private HandIK handIK;
+
+    public PowerHolder PowerHolder;
+    
     private float _aimBlend = 0;
     private int _hashAimProperty;
 
@@ -58,7 +61,7 @@ public class AimController : MonoBehaviour
 
             animator.SetFloat(_hashAimProperty, _aimBlend);
             animator.SetLayerWeight(1, _aimBlend);
-            testIK.weight = _aimBlend;
+            handIK.weight = _aimBlend;
             visualEffect.SetInt("HP", 0);
 
             defaultCamera.gameObject.SetActive(true);
@@ -74,7 +77,7 @@ public class AimController : MonoBehaviour
 
         animator.SetFloat(_hashAimProperty, _aimBlend);
         animator.SetLayerWeight(1, _aimBlend);
-        testIK.weight = _aimBlend;
+        handIK.weight = _aimBlend;
         if (Physics.Raycast(centerPos, out var hit, Mathf.Infinity,
                 layerMask))
         {
@@ -84,8 +87,13 @@ public class AimController : MonoBehaviour
                 return;
             visualEffect.SetInt("HP", hpDebug.hp);
             SetVisualEffectCondition(hpDebug);
- 
             hpDebug.hp--;
+            PowerHolder.ChangePower(new PowerColorsChange()
+            {
+                PowerColors =hpDebug.PowerColors,
+                NewValue =PowerHolder[hpDebug.PowerColors]+1,
+                Value = PowerHolder[hpDebug.PowerColors]
+            });
         }
         else
         {

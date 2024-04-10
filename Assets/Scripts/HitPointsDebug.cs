@@ -15,7 +15,7 @@ public class HitPointsDebug : MonoBehaviour
     private static readonly int BaseColor = Shader.PropertyToID((BASE_COLOR_PROPERTY));
     public Color CurrentColor => curMaterial.GetColor(BaseColor);
     public Mesh CurrentMesh { get; private set; }
-
+    public PowerColors PowerColors;
     private void Awake()
     {
         defaultHp = hp;
