@@ -26,13 +26,11 @@ public class PowerHolderUI : MonoBehaviour
     public void SetPowerHolder(PowerHolder powerHolder)
     {
         _powerHolder = powerHolder;
-        Debug.Log("HERE");
         _powerHolder.LevelOfPowersChanged += OnLevelOfPowersChanged;
     }
 
     private void OnLevelOfPowersChanged(PowerColorsChange obj)
     {
-        Debug.Log(obj.NewValue);
         _powerSliders[obj.PowerColors].value = obj.NewValue;
     }
 }

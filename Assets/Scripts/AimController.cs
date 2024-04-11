@@ -14,13 +14,13 @@ public class AimController : MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera defaultCamera;
     [SerializeField] private PlayerInput playerInput;
-    [SerializeField] private Camera realCamera;
     [SerializeField] private StarterAssetsInputs input;
+    [SerializeField] private Camera realCamera;
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private Animator animator;
     [SerializeField] private VisualEffect visualEffect;
     [SerializeField] private HandIK handIK;
-
+    [SerializeField] private Character player;
     public PowerHolder PowerHolder;
     
     private float _aimBlend = 0;
@@ -54,6 +54,17 @@ public class AimController : MonoBehaviour
 
     private void Aim()
     {
+        var xCenter = Screen.width / 2;
+        var yCenter = Screen.height / 2;
+        
+        if (input.attack)
+        {
+            var ray = realCamera.ScreenPointToRay(new Vector3(xCenter, yCenter, 0));
+            player.Attack(new AttackInstruction()
+            {
+                direction = ray.direction
+            });
+        }
         if (!input.aim)
         {
             _aimBlend = Mathf.Lerp(_aimBlend, 0, 10 * Time.deltaTime);
@@ -68,8 +79,7 @@ public class AimController : MonoBehaviour
             return;
         }
 
-        var xCenter = Screen.width / 2;
-        var yCenter = Screen.height / 2;
+        
         var centerPos = realCamera.ScreenPointToRay(new Vector3(xCenter, yCenter, 0));
 
         _aimBlend = Mathf.Lerp(_aimBlend, 1, 10 * Time.deltaTime);
@@ -83,8 +93,10 @@ public class AimController : MonoBehaviour
         {
             if (!hit.collider.gameObject.TryGetComponent(out HitPointsDebug hpDebug))
                 return;
+            
             if (hpDebug.hp < 0)
                 return;
+            
             visualEffect.SetInt("HP", hpDebug.hp);
             SetVisualEffectCondition(hpDebug);
             hpDebug.hp--;
